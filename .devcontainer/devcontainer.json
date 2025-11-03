@@ -1,0 +1,19 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.234.0/containers/typescript-node
+{
+  "name": "Sentry repro",
+  "build": {
+    "dockerfile": "./Dockerfile"
+  },
+  "appPort": [5336],
+  "containerEnv": {
+    "TZ": "UTC"
+  },
+  "forwardPorts": [5336],
+
+  // Use 'postCreateCommand' to run commands after the container is created.
+  "postCreateCommand": "pnpm install && pnpm sst install",
+
+  // Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+  "remoteUser": "node"
+}
