@@ -8,3 +8,4 @@
     router: https://xxxxxx.cloudfront.net <- this one
     api: https://xxxxxx.execute-api.us-east-1.amazonaws.com
     ```
+4. When finished, `pnpm sst remove` destroys the deployment.
