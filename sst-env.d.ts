@@ -13,7 +13,7 @@ declare module "sst" {
       "type": "sst.aws.StaticSite"
       "url": string
     }
-    "dmca-router": {
+    "router": {
       "type": "sst.aws.Router"
       "url": string
     }

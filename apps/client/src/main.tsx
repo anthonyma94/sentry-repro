@@ -9,6 +9,7 @@ import { routeTree } from './routeTree.gen'
 import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
 import { createTRPCClient, httpBatchLink } from '@trpc/client'
+import { init, replayIntegration, tanstackRouterBrowserTracingIntegration } from '@sentry/react';
 
 const trpc = createTRPCClient<Router>({
   links: [
@@ -40,6 +41,22 @@ declare module '@tanstack/react-router' {
     router: typeof router
   }
 }
+
+init({
+  dsn: import.meta.env.VITE_SENTRY_DSN,
+  tracesSampleRate: 1.0,
+  replaysSessionSampleRate: 1.0,
+  replaysOnErrorSampleRate: 1.0,
+  sendDefaultPii: true,
+  normalizeDepth: 50,
+  integrations: [
+    replayIntegration({
+      blockAllMedia: false,
+      maskAllText: false
+    }),
+    tanstackRouterBrowserTracingIntegration(router)
+  ]
+})
 
 
 // Render the app

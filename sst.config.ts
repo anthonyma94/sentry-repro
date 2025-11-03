@@ -11,7 +11,7 @@ export default $config({
     };
   },
   async run() {
-    const router = new sst.aws.Router("dmca-router", {
+    const router = new sst.aws.Router("router", {
       transform: {
         cachePolicy: {
           parametersInCacheKeyAndForwardedToOrigin: {
@@ -50,7 +50,7 @@ export default $config({
             command: `
               VERSION=$(pnpm sentry-cli releases propose-version); \\
               pnpm sentry-cli releases new -p $SENTRY_PROJECT $VERSION && \\
-              pnpm sentry-cli releases set-commits --auto $VERSION && \\
+              pnpm sentry-cli releases set-commits --auto --ignore-missing $VERSION && \\
               pnpm sentry-cli sourcemaps inject ${dir} && \\
               pnpm sentry-cli sourcemaps upload --release $VERSION ${dir} && \\
               find ${dir} -type f \\( -name "*.js.map" -or -name "*.mjs.map" \\) -delete`,
@@ -69,6 +69,9 @@ export default $config({
 
     new sst.aws.StaticSite("client", {
       path: "apps/client",
+      router: {
+        instance: router,
+      },
       build: {
         command: "pnpm --filter @sentry-repo/client run build",
         output: "dist"
@@ -80,7 +83,7 @@ export default $config({
         NODE_ENV: $dev ? "development" : "production",
         VITE_TRPC_URL: $interpolate`${router.url}/trpc`,
         SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN!,
-        SENTRY_DSN: process.env.CLIENT_SENTRY_DSN!,
+        VITE_SENTRY_DSN: process.env.CLIENT_SENTRY_DSN!,
         SENTRY_ORG: process.env.SENTRY_ORG!,
         SENTRY_PROJECT: process.env.CLIENT_SENTRY_PROJECT!
       }

@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import logo from '../logo.svg'
 import '../App.css'
 import { useState } from 'react';
+import { captureException } from '@sentry/react';
 
 export const Route = createFileRoute('/')({
   component: App,
@@ -15,6 +16,7 @@ function App() {
       await trpc.error.mutate();
       setError("");
     } catch (e: any) {
+      captureException(e);
       setError(e.message);
     }
   }
